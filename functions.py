@@ -134,7 +134,8 @@ def get_llm_explanation(client: Groq, prompt: str) -> str:
                 "content": prompt
             }
         ],
-        temperature=0.3
+        temperature=0.3,
+        max_tokens=200
     )
     return response.choices[0].message.content.strip()
 
@@ -176,7 +177,7 @@ Collect these 5 details ONE AT A TIME:
 Rules:
 - Ask ONE question per message — keep it very short (under 10 words)
 - No long sentences, no explanations, no filler phrases
-- Use ONE emoji at the very start of your message, never more than one
+- Do NOT use any emoji in your messages
 - Once you have ALL 5 details, respond with ONLY this JSON (no extra text):
 {"destination":"USA","trip_cost":150000,"duration":20,"age":62,"medical_condition":"diabetes"}
 - Start by greeting briefly and asking for destination"""
@@ -184,7 +185,8 @@ Rules:
     response = client.chat.completions.create(
         model="qwen/qwen3.8-27b",
         messages=[{"role": "system", "content": system_prompt}] + messages,
-        temperature=0.5
+        temperature=0.5,
+        max_tokens=200
     )
 
     reply = response.choices[0].message.content.strip()
